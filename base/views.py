@@ -12,9 +12,6 @@ from django.shortcuts import get_object_or_404
 
 # Create your views here.
 
-
-def front(request):
-   return render(request,'base.html')
 @api_view(['GET','POST','DELETE'])
 
 def all_invoices(request):
