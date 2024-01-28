@@ -3,6 +3,7 @@ from rest_framework import status
 from django.urls import reverse
 from .models import Invoices, Invoice_details
 
+
 class InvoiceAPITestCase(APITestCase):
     def setUp(self):
         # Create some initial data for testing
@@ -14,8 +15,7 @@ class InvoiceAPITestCase(APITestCase):
             unit_price=10.00,
             price=20.00
         )
-
-   
+        
     def test_all_invoices(self):
             # Test GET /invoices/
         response = self.client.get('/invoices/')
@@ -40,18 +40,20 @@ class InvoiceAPITestCase(APITestCase):
         url = reverse('all-invoices')
         response = self.client.delete(url)
         self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
-
-
+ 
     def test_details(self):
-        # Test GET /invoices/<int:pk>/
-        response = self.client.get(reverse('invoice-detail', kwargs={'pk': self.invoice_detail.pk}))
+        self.invoice = Invoices.objects.create(name="Test1")
+        # Test GET request
+        url = reverse('invoice-detail', args=[self.invoice.id])  
+        response = self.client.get(url)
         self.assertEqual(response.status_code, status.HTTP_200_OK)
+       
+        #Test POST request
+        new_data = {'invoice': self.invoice.id, 'description': 'New Item', 'quantity': 1, 'unit_price': 5}
+        url = reverse('invoice-detail', args=[self.invoice.id])  
+        response = self.client.post(url, data=new_data)
+        self.assertEqual(response.status_code, status.HTTP_201_CREATED)
 
-        # Test PUT /invoices/<int:pk>/
-        data = {'description': 'Updated Description', 'quantity': 3, 'unit_price': 15.00}
-        response = self.client.put(reverse('invoice-detail', kwargs={'pk': self.invoice_detail.pk}), data, format='json')
-        self.assertEqual(response.status_code, status.HTTP_200_OK)
-        
-        # Test DELETE /invoices/<int:pk>/
-        response = self.client.delete(reverse('invoice-detail', kwargs={'pk': self.invoice_detail.pk}))
+        # Test DELETE request
+        response = self.client.delete(url)
         self.assertEqual(response.status_code, status.HTTP_200_OK)
