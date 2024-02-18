@@ -9,6 +9,7 @@ Installations:
 - For restframework `pip install djangorestframework`
 
 Create a new project : `django-admin startproject project_name`
+
 Create a new app: `python manage.py startapp app_name`
 
 Add the app_name and restframework in 'Installed_apps' in settings.py 
